@@ -18,6 +18,7 @@ class MainViewController: UIViewController{
         // Add long press gesture recognizer to the table view
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
         tableView.addGestureRecognizer(longPressGesture)
+        print("hi")
     }
 
     // Long press gesture handler
