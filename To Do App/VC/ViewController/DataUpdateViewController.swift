@@ -1,9 +1,3 @@
-//
-//  DataUpdateViewController.swift
-//  To Do App
-//
-//  Created by Meet Kapadiya on 15/11/24.
-//
 import UIKit
 
 protocol DataUpdateDelegate: AnyObject {
@@ -14,16 +8,19 @@ class DataUpdateViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentTextField: UITextField!
     
-    var noteToUpdate: Note?
     weak var delegate: DataUpdateDelegate?
-
+    var noteToUpdate: Note?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        textFeildEdit()
+        hideKeyboardWhenTappedAround()
+        
+        // Display the selected note's data
         if let note = noteToUpdate {
             titleTextField.text = note.title
             contentTextField.text = note.content
         }
-        textFeildEdit()
     }
     
     func textFeildEdit(){
@@ -41,14 +38,24 @@ class DataUpdateViewController: UIViewController {
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
         )
     }
-    @IBAction func saveButtonTapped(_ sender: UIButton) {
-        guard let title = titleTextField.text, !title.isEmpty,
-              let content = contentTextField.text, !content.isEmpty,
-              let note = noteToUpdate else {
-            return
-        }
+
+    func hideKeyboardWhenTappedAround() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func hideKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @IBAction func saveTapped(_ sender: UIButton) {
+        guard let note = noteToUpdate,
+              let title = titleTextField.text,
+              let content = contentTextField.text,
+              !title.isEmpty,
+              !content.isEmpty else { return }
         
-        let updatedNote = Note(id: note.id, title: title, content: content, createdAt: note.createdAt)
+        let updatedNote = Note(id: note.id, title: title, content: content)
         NotesManager.shared.updateNote(updatedNote)
         delegate?.didUpdateNote()
         navigationController?.popViewController(animated: true)

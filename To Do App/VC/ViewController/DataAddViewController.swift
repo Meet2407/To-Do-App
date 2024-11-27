@@ -6,7 +6,6 @@
     //
 
 import UIKit
-
 protocol DataAddDelegate: AnyObject {
     func didAddNote()
 }
@@ -16,12 +15,13 @@ class DataAddViewController: UIViewController {
     @IBOutlet weak var contentTextField: UITextField!
     
     weak var delegate: DataAddDelegate?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        textFeildEdit()
-    }
 
+        textFeildEdit()
+        hideKeyboardWhenTappedAround()
+    }
     
     func textFeildEdit(){
         titleTextField.backgroundColor = UIColor.clear
@@ -38,13 +38,23 @@ class DataAddViewController: UIViewController {
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.white]
         )
     }
-    @IBAction func saveButtonTapped(_ sender: UIButton) {
-        guard let title = titleTextField.text, !title.isEmpty,
-              let content = contentTextField.text, !content.isEmpty else {
-            return
-        }
+    
+    func hideKeyboardWhenTappedAround() {
+          let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+          view.addGestureRecognizer(tapGesture)
+      }
+      
+      @objc func hideKeyboard() {
+          view.endEditing(true)
+      }
+    
+    @IBAction func saveTapped(_ sender: UIButton) {
+        guard let title = titleTextField.text,
+              let content = contentTextField.text,
+              !title.isEmpty,
+              !content.isEmpty else { return }
         
-        let newNote = Note(id: UUID(), title: title, content: content, createdAt: Date())
+        let newNote = Note(id: UUID().uuidString, title: title, content: content)
         NotesManager.shared.addNote(newNote)
         delegate?.didAddNote()
         navigationController?.popViewController(animated: true)

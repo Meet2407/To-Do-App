@@ -12,6 +12,7 @@ class DisplayTableViewCell: UITableViewCell {
     
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var typeSomething: UILabel!
+    @IBOutlet weak var bgView: UIView!
 
     override func awakeFromNib() {
         super.awakeFromNib()

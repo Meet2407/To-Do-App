@@ -7,10 +7,8 @@
 
 import Foundation
 
-struct Note {
-    let id: UUID
+struct Note: Codable {
+    var id: String
     var title: String
     var content: String
-    let createdAt: Date
 }
-
